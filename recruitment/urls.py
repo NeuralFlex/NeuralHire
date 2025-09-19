@@ -10,10 +10,10 @@ router.register(r'jobs', JobViewSet, basename='job')
 router.register(r'applications', ApplicationViewSet, basename='application')
 
 urlpatterns = [
-    path('', home, name='home'),                      # Home page
-    path('admin/', admin.site.urls),                  # Admin panel
-    path('', include(router.urls)),               # /api/jobs/, /api/applications/
-    path('jobs/<int:job_id>/apply-form/', apply_form, name='apply_form'),  # Candidate form
+    path('', home, name='home'),                    # Home page
+    path('admin/', admin.site.urls),                # Admin panel
+    path('api/', include(router.urls)),             # /api/jobs/, /api/applications/
+    path('api/jobs/<int:job_id>/apply-form/', apply_form, name='apply_form'),  # Candidate form
 ]
 
 if settings.DEBUG:

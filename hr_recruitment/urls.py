@@ -7,7 +7,7 @@ from recruitment.views import home
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('recruitment.urls')),    
+    path('', include('recruitment.urls')),    
     path('', home, name='home'),                
 ]
 
