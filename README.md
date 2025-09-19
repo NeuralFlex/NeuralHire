@@ -1,4 +1,4 @@
-#NeuralHire – Internal Hiring Platform
+# NeuralHire – Internal Hiring Platform
 
 NeuralHire is an internal recruitment platform built for NeuralFlex.
 It helps the team manage job postings, candidate applications, and the full hiring pipeline without relying on paid SaaS solutions like Workable.
