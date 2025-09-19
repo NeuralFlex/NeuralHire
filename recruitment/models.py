@@ -48,6 +48,9 @@ class Application(models.Model):
     candidate = models.ForeignKey(Candidate, related_name='applications', on_delete=models.CASCADE)
     stage = models.CharField(max_length=20, choices=STAGES, default='applied')
     applied_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ('job', 'candidate')  
 
     def __str__(self):
         return f"{self.candidate.full_name} - {self.job.title} ({self.stage})"

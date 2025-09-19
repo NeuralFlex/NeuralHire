@@ -4,6 +4,14 @@ from rest_framework.response import Response
 from django.http import HttpResponse
 from .models import Job, Application, Candidate
 from .serializers import JobSerializer, ApplicationSerializer, CandidateSerializer
+from .permissions import IsAdminOrCreateOnly
+from django.views.decorators.csrf import csrf_exempt
+
+
+from django.shortcuts import render
+
+def apply_form(request, job_id):
+    return render(request, "apply.html", {"job_id": job_id})
 
 
 def home(request):
@@ -16,17 +24,19 @@ class JobViewSet(viewsets.ModelViewSet):
     serializer_class = JobSerializer
 
     def get_permissions(self):
+        # Public can list, retrieve, and apply
         if self.action in ['list', 'retrieve', 'apply']:
             return [permissions.AllowAny()]
+        # Admin/Recruiter only for create/update/delete
         return [permissions.IsAdminUser()]
 
     @action(detail=True, methods=['post'], permission_classes=[permissions.AllowAny])
+    @csrf_exempt
     def apply(self, request, pk=None):
         """Public endpoint: POST /api/jobs/{id}/apply/"""
         job = self.get_object()
         data = request.data.copy()
 
-        # Ensure candidate exists or create new
         candidate, created = Candidate.objects.get_or_create(
             email=data.get('email'),
             defaults={
@@ -36,14 +46,12 @@ class JobViewSet(viewsets.ModelViewSet):
             }
         )
 
-        # Prevent duplicate application
         if Application.objects.filter(job=job, candidate=candidate).exists():
             return Response(
                 {"error": "You have already applied for this job."},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Create new application
         app = Application.objects.create(
             job=job,
             candidate=candidate,
@@ -56,14 +64,12 @@ class JobViewSet(viewsets.ModelViewSet):
 
 
 class ApplicationViewSet(viewsets.ModelViewSet):
-    """Admin-only: manage candidate applications."""
     queryset = Application.objects.select_related('job', 'candidate').all().order_by('-applied_at')
     serializer_class = ApplicationSerializer
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [IsAdminOrCreateOnly]
     filterset_fields = ['stage', 'job']
 
     def update(self, request, *args, **kwargs):
-        """Restrict updates to only the 'stage' field."""
         instance = self.get_object()
         stage = request.data.get("stage")
         if not stage:
