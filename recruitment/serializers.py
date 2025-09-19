@@ -7,8 +7,7 @@ class JobSerializer(serializers.ModelSerializer):
         model = Job
         fields = '__all__'
 
-
-
+    
 class CandidateApplicationSerializer(serializers.ModelSerializer):
     job_title = serializers.CharField(source="job.title", read_only=True)
     class Meta:
