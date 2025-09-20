@@ -5,7 +5,6 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-
 from .models import Job, Application, Candidate
 from .serializers import JobSerializer, ApplicationSerializer
 from .permissions import IsAdminOrCreateOnly
@@ -36,7 +35,6 @@ class JobViewSet(viewsets.ModelViewSet):
         job = self.get_object()
         data = request.data
 
-        # Handle file upload
         resume_file = request.FILES.get('resume')
         if not resume_file:
             return Response({"error": "Resume file is required."}, status=status.HTTP_400_BAD_REQUEST)
