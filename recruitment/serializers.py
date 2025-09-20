@@ -19,6 +19,8 @@ class ApplicationSerializer(serializers.ModelSerializer):
     candidate_name = serializers.CharField(source="candidate.full_name", read_only=True)
     candidate_email = serializers.EmailField(source="candidate.email", read_only=True)
 
+    candidate = CandidateSerializer()
+
     class Meta:
         model = Application
         fields = [
@@ -31,3 +33,11 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "stage",
             "applied_at",
         ]
+
+    def create(self, validated_data):
+        candidate_data = validated_data.pop("candidate")
+        candidate, _ = Candidate.objects.get_or_create(
+            email=candidate_data["email"], defaults=candidate_data
+        )
+        application = Application.objects.create(candidate=candidate, **validated_data)
+        return application
