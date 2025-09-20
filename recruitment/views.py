@@ -6,6 +6,7 @@ from django.shortcuts import render
 from .models import Job, Application, Candidate
 from .serializers import JobSerializer, ApplicationSerializer
 from .permissions import IsAdminOrCreateOnly
+from rest_framework.permissions import IsAuthenticated
 
 
 # Homepage
@@ -32,7 +33,7 @@ class JobViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action in ['list', 'retrieve', 'apply']:
             return [permissions.AllowAny()]
-        return [permissions.IsAdminUser()]
+        return [IsAuthenticated()]
 
     @action(detail=True, methods=['post'], permission_classes=[permissions.AllowAny])
     def apply(self, request, pk=None):
