@@ -8,23 +8,26 @@ from .serializers import JobSerializer, ApplicationSerializer
 from .permissions import IsAdminOrCreateOnly
 
 
-# Optional homepage
+# Homepage
 def home(request):
     return render(request, "home.html")
 
 
-# Optional frontend form page
+# Candidate apply form page
 def apply_form(request, job_id):
+    """
+    Render a simple form page to apply for a specific job.
+    """
     return render(request, "apply.html", {"job_id": job_id})
+
 
 class JobViewSet(viewsets.ModelViewSet):
     """
-    Admin CRUD for jobs.
-    Public can view jobs and apply.
+    Admin CRUD for jobs. Public can view jobs and apply.
     """
     queryset = Job.objects.all().order_by('-created_at')
     serializer_class = JobSerializer
-    parser_classes = [MultiPartParser, FormParser]  # for file uploads
+    parser_classes = [MultiPartParser, FormParser]  # For file uploads
 
     def get_permissions(self):
         if self.action in ['list', 'retrieve', 'apply']:
@@ -58,7 +61,6 @@ class JobViewSet(viewsets.ModelViewSet):
         )
 
         if not created:
-            # Update existing candidate
             candidate.full_name = full_name
             candidate.phone = phone
             candidate.resume = resume_file
