@@ -11,27 +11,22 @@ from .serializers import JobSerializer, ApplicationSerializer
 from .permissions import IsAdminOrCreateOnly
 
 
-# ---------------- Home Page ----------------
 def home(request):
     return HttpResponse("<h1>Welcome to NeuralHire Recruitment Platform</h1>")
 
 
-# ---------------- Candidate Apply Form ----------------
 def apply_form(request, job_id):
     return render(request, "apply.html", {"job_id": job_id})
 
 
-# ---------------- Job ViewSet ----------------
 class JobViewSet(viewsets.ModelViewSet):
     """Admin CRUD for jobs. Public can view + apply."""
     queryset = Job.objects.all().order_by('-created_at')
     serializer_class = JobSerializer
 
     def get_permissions(self):
-        # Public can list, retrieve, and apply
         if self.action in ['list', 'retrieve', 'apply']:
             return [permissions.AllowAny()]
-        # Admin/Recruiter only for create/update/delete
         return [permissions.IsAdminUser()]
 
     @method_decorator(csrf_exempt)
@@ -46,7 +41,6 @@ class JobViewSet(viewsets.ModelViewSet):
         if not resume_file:
             return Response({"error": "Resume file is required."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Create or update candidate
         candidate, created = Candidate.objects.get_or_create(
             email=data.get('email'),
             defaults={
@@ -56,27 +50,25 @@ class JobViewSet(viewsets.ModelViewSet):
             }
         )
 
-        # If candidate exists, update resume
         if not created:
             candidate.resume = resume_file
             candidate.save()
 
-        # Prevent duplicate application
+
         if Application.objects.filter(job=job, candidate=candidate).exists():
             return Response({"error": "You have already applied for this job."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Create application
+
         app = Application.objects.create(job=job, candidate=candidate, stage='applied')
 
         return Response({"status": "Application submitted", "application_id": app.id}, status=status.HTTP_201_CREATED)
 
 
-# ---------------- Application ViewSet ----------------
 class ApplicationViewSet(viewsets.ModelViewSet):
     """Admin-only: manage candidate applications."""
     queryset = Application.objects.select_related('job', 'candidate').all().order_by('-applied_at')
     serializer_class = ApplicationSerializer
-    permission_classes = [IsAdminOrCreateOnly]  # Admin can update stage
+    permission_classes = [IsAdminOrCreateOnly]  
     filterset_fields = ['stage', 'job']
 
     def update(self, request, *args, **kwargs):
