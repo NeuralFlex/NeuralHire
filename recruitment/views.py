@@ -39,10 +39,6 @@ class JobViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'], permission_classes=[permissions.AllowAny])
     def apply(self, request, pk=None):
-        """
-        Public endpoint: POST /api/jobs/{id}/apply/
-        Handles candidate creation and application.
-        """
         job = self.get_object()
 
         full_name = request.data.get("full_name")
@@ -53,7 +49,7 @@ class JobViewSet(viewsets.ModelViewSet):
         # Validate required fields
         if not full_name or not email or not resume_file:
             return Response(
-                {"error": "full_name, email, and resume are required."},
+                {"error": "full_name, email, and resume are required to procced."},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
