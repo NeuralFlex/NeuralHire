@@ -7,6 +7,7 @@ from .models import Job, Application, Candidate
 from .serializers import JobSerializer, ApplicationSerializer
 from .permissions import IsAdminOrCreateOnly
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny
 
 
 # Homepage
@@ -28,6 +29,7 @@ class JobViewSet(viewsets.ModelViewSet):
     """
     queryset = Job.objects.all().order_by('-created_at')
     serializer_class = JobSerializer
+    permission_classes = [AllowAny]
     parser_classes = [MultiPartParser, FormParser]  # For file uploads
 
     def get_permissions(self):
