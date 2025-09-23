@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Job, Candidate, Application
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
 class JobSerializer(serializers.ModelSerializer):
@@ -41,3 +42,17 @@ class ApplicationSerializer(serializers.ModelSerializer):
         )
         application = Application.objects.create(candidate=candidate, **validated_data)
         return application
+
+class NeuralHireTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        # Add role info to JWT claims
+        token['role'] = 'admin' if user.is_staff else 'user'
+        return token
+
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        # Also include role in response payload
+        data['role'] = 'admin' if self.user.is_staff else 'user'
+        return data

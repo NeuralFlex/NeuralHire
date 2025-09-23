@@ -110,3 +110,10 @@ class ApplicationViewSet(viewsets.ModelViewSet):
         instance.stage = stage
         instance.save()
         return Response(self.get_serializer(instance).data)
+
+
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .serializers import NeuralHireTokenObtainPairSerializer
+
+class NeuralHireTokenObtainPairView(TokenObtainPairView):
+    serializer_class = NeuralHireTokenObtainPairSerializer
