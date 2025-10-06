@@ -5,7 +5,6 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from django.shortcuts import render
 from .models import Job, Application, Candidate
 from .serializers import JobSerializer, ApplicationSerializer
-from .permissions import IsAdminOrCreateOnly
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import AllowAny
 
@@ -90,10 +89,17 @@ class ApplicationViewSet(viewsets.ModelViewSet):
     """
     Admin-only: manage candidate applications
     """
-    queryset = Application.objects.select_related('job', 'candidate').all().order_by('-applied_at')
     serializer_class = ApplicationSerializer
-    permission_classes = [IsAdminOrCreateOnly]
+    permission_classes = [IsAuthenticated]
     filterset_fields = ['stage', 'job']
+
+    def get_queryset(self):
+        user = self.request.user
+
+        if user.is_superuser or getattr(user, "role", "") == "admin":
+            return Application.objects.select_related('job', 'candidate').all().order_by('-applied_at')
+
+        return Application.objects.select_related('job', 'candidate').filter(candidate__email=user.email)
 
     def update(self, request, *args, **kwargs):
         """
@@ -110,6 +116,7 @@ class ApplicationViewSet(viewsets.ModelViewSet):
         instance.stage = stage
         instance.save()
         return Response(self.get_serializer(instance).data)
+
 
 
 from rest_framework_simplejwt.views import TokenObtainPairView
