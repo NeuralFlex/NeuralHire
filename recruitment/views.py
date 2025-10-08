@@ -28,13 +28,14 @@ class JobViewSet(viewsets.ModelViewSet):
     """
     queryset = Job.objects.all().order_by('-created_at')
     serializer_class = JobSerializer
-    permission_classes = [AllowAny]
-    parser_classes = [MultiPartParser, FormParser]  # For file uploads
+    parser_classes = [MultiPartParser, FormParser] 
 
     def get_permissions(self):
         if self.action in ['list', 'retrieve', 'apply']:
-            return [permissions.AllowAny()]
-        return [IsAuthenticated()]
+            permission_classes = [AllowAny]
+        else:
+            permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
 
     @action(detail=True, methods=['post'], permission_classes=[permissions.AllowAny])
     def apply(self, request, pk=None):
