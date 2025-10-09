@@ -26,7 +26,6 @@ INSTALLED_APPS = [
 
     'recruitment',
 ]
-
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
