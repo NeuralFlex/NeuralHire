@@ -39,6 +39,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
+X_FRAME_OPTIONS = 'ALLOWALL'
 ROOT_URLCONF = 'hr_recruitment.urls'
 
 TEMPLATES = [
