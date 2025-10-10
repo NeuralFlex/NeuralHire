@@ -1,71 +1,84 @@
-# NeuralHire – Internal Hiring Platform
+# NeuralHire
 
-NeuralHire is an internal recruitment platform built for NeuralFlex.
-It helps the team manage job postings, candidate applications, and the full hiring pipeline without relying on paid SaaS solutions like Workable.
+Full-stack recruitment & HR platform comprising **Django backend** + **React frontend**.  
+NeuralHire supports job listings, candidate tracking, ATS pipeline, dashboards, and more.
 
-# Features
-## Admin
+**Frontend Repo**: [NeuralFlex/NerualHire-Frontend](https://github.com/NeuralFlex/NerualHire-Frontend)  
+**Backend Repo**: This is the **NeuralHire** backend  
 
-Secure Admin Login & Dashboard
+---
 
-Create & Manage Job Postings
+## Key Features
 
-Title, Description, Requirements, Benefits, Location (Onsite/Hybrid/Remote)
+### Backend (Django)
+- REST API with role-based permissions (Admin / User)  
+- Employee, Job & Candidate management  
+- Authentication (JWT or token-based)  
+- Salary slip / document generation  
+- Dashboard data endpoints  
 
-Status (Open/Closed)
+### Frontend (React)
+- Job & Candidate views  
+- ATS pipeline visualization  
+- Dynamic dashboards & analytics  
+- API requests via Axios  
+- Routing with React Router  
+- Responsive UI with Bootstrap + Tailwind  
 
-View Applications for each job
+---
 
-Update Pipeline Stage of candidates:
+## Tech Stack
 
-Applied → Screening → Interview → Offer → Hired/Rejected
+| Layer     | Technology |
+|-----------|-------------|
+| Backend   | Django, Django REST Framework, Python |
+| Frontend  | React, Axios, React Router, Tailwind, Bootstrap |
+| Database  | SQLite (dev), optionally PostgreSQL for production |
+| Deployment| Any cloud with support for Python + static frontends |
 
-Download Candidate Resumes
+---
 
-Analytics Overview (Jobs posted, Applications received, Hiring success)
+## Prerequisites
 
-## Candidate
+- Python 3.8+  
+- Node.js (v16+) & npm / yarn  
+- pip  
+- (Optional) PostgreSQL if you use that instead of SQLite  
 
-Public Job Listings Page (no login required)
+---
 
-Apply to Jobs with resume upload and personal info (name, email, phone)
+##  Backend Setup
 
-Automatic Application Entry into the pipeline with status = Applied
+Clone this repo and navigate into it:
+```bash
+git clone https://github.com/NeuralFlex/NeuralHire.git
+cd NeuralHire
+```
 
-Email acknowledgment/notification (optional in later version)
+## Create & activate virtual environment:
+```bash 
+python -m venv venv
+# On Linux / macOS:
+source venv/bin/activate
+# On Windows:
+venv\Scripts\activate
+```
 
-## Database Design
+## Install backend Python dependencies:
+```bash 
+pip install -r requirements.txt
+```
 
-Admin → manages jobs.
-
-Job → stores job postings.
-
-Candidate → stores candidate information.
-
-Application → links candidate to job + tracks pipeline stage.
-
-## Flow (How It Works)
-
-Admin logs in → creates job.
-
-Candidate visits public page → applies with resume.
-
-Application created → enters pipeline at "Applied".
-
-Admin reviews application → updates stage across pipeline.
-
-Final outcome → Hired ✅ or Rejected ❌.
-
-## Tech Stack (Planned)
-
-Backend: Django + DRF (Python)
-
-Frontend: React (Bootstrap / Tailwind)
-
-Database: PostgreSQL / MySQL
-
-## Deployment:
-
-Backend → PythonAnywhere / Render
-
-Frontend → Netlify / Vercel
+## Apply database migrations:
+```bash
+python manage.py migrate
+```
+### Create superuser:
+```bash
+python manage.py createsuperuser
+```
+### Run the backend server:
+```bash
+python manage.py runserver
+```
+The backend API will run on http://127.0.0.1:8000/ by default.

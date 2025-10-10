@@ -39,7 +39,7 @@ class Candidate(models.Model):
 class Application(models.Model):
     STAGES = [
         ('applied', 'Applied'),
-        ('screening', 'Screening'),
+        ('screening','Screening'),
         ('interview', 'Interview'),
         ('hired', 'Hired'),
         ('rejected', 'Rejected'),
