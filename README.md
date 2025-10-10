@@ -64,6 +64,14 @@ source venv/bin/activate
 venv\Scripts\activate
 ```
 
+## Install Required Packages:
+```bash 
+pip install django djangorestframework djangorestframework-simplejwt
+pip install django-cors-headers
+pip install python-dotenv
+pip install Pillow
+```
+
 ## Install backend Python dependencies:
 ```bash 
 pip install -r requirements.txt
@@ -81,4 +89,4 @@ python manage.py createsuperuser
 ```bash
 python manage.py runserver
 ```
-The backend API will run on http://127.0.0.1:8000/ by default.
+The backend API will run on http://127.0.0.1:8000/api and http://127.0.0.1:8000/admin
