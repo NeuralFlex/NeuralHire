@@ -5,8 +5,9 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from django.shortcuts import render
 from .models import Job, Application, Candidate
 from .serializers import JobSerializer, ApplicationSerializer
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .serializers import NeuralHireTokenObtainPairSerializer
 
 
 # Homepage
@@ -23,12 +24,9 @@ def apply_form(request, job_id):
 
 
 class JobViewSet(viewsets.ModelViewSet):
-    """
-    Admin CRUD for jobs. Public can view jobs and apply.
-    """
     queryset = Job.objects.all().order_by('-created_at')
     serializer_class = JobSerializer
-    parser_classes = [MultiPartParser, FormParser] 
+    parser_classes = [MultiPartParser, FormParser]
 
     def get_permissions(self):
         if self.action in ['list', 'retrieve', 'apply']:
@@ -37,9 +35,35 @@ class JobViewSet(viewsets.ModelViewSet):
             permission_classes = [IsAuthenticated]
         return [permission() for permission in permission_classes]
 
+    # -----------------------------
+    # 🔒 Custom Admin Actions
+    # -----------------------------
+    @action(detail=True, methods=['patch'], permission_classes=[IsAuthenticated])
+    def close(self, request, pk=None):
+        """Mark job as closed."""
+        job = self.get_object()
+        job.is_open = False
+        job.save()
+        return Response({"message": "Job closed successfully"}, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['patch'], permission_classes=[IsAuthenticated])
+    def open(self, request, pk=None):
+        """Reopen a closed job."""
+        job = self.get_object()
+        job.is_open = True
+        job.save()
+        return Response({"message": "Job reopened successfully"}, status=status.HTTP_200_OK)
+
+    
     @action(detail=True, methods=['post'], permission_classes=[permissions.AllowAny])
     def apply(self, request, pk=None):
         job = self.get_object()
+
+        if not job.is_open:
+            return Response(
+                {"error": "This job is closed for applications."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         full_name = request.data.get("full_name")
         email = request.data.get("email")
@@ -49,7 +73,7 @@ class JobViewSet(viewsets.ModelViewSet):
         # Validate required fields
         if not full_name or not email or not resume_file:
             return Response(
-                {"error": "full_name, email, and resume are required to procced."},
+                {"error": "full_name, email, and resume are required to proceed."},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -87,9 +111,7 @@ class JobViewSet(viewsets.ModelViewSet):
 
 
 class ApplicationViewSet(viewsets.ModelViewSet):
-    """
-    Admin-only: manage candidate applications
-    """
+    
     serializer_class = ApplicationSerializer
     permission_classes = [IsAuthenticated]
     filterset_fields = ['stage', 'job']
@@ -118,10 +140,6 @@ class ApplicationViewSet(viewsets.ModelViewSet):
         instance.save()
         return Response(self.get_serializer(instance).data)
 
-
-
-from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import NeuralHireTokenObtainPairSerializer
 
 class NeuralHireTokenObtainPairView(TokenObtainPairView):
     serializer_class = NeuralHireTokenObtainPairSerializer
