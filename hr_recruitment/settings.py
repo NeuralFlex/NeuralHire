@@ -11,6 +11,7 @@ ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '*').split(',') if not DE
 CORS_ALLOW_ALL_ORIGINS = DEBUG
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  
+    "https://neuralhirefrontend.netlify.app",
 ]
 
 INSTALLED_APPS = [
@@ -62,8 +63,11 @@ WSGI_APPLICATION = 'hr_recruitment.wsgi.application'
 # Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'yourusername$dbname',  
+        'USER': 'yourusername',          
+        'PASSWORD': 'your_db_password',  
+        'HOST': 'your.mysql.host.address',
     }
 }
 
