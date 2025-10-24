@@ -14,17 +14,13 @@ DEBUG = os.environ.get('DJANGO_DEBUG', '0') == '1'
 RAILWAY_HOST = 'web-production-9687.up.railway.app' 
 NETLIFY_HOST = 'https://neuralhirefrontend.netlify.app'
 
-# 2. FIXED ALLOWED_HOSTS LOGIC: Handles production hosts robustly.
 if DEBUG:
-    # Allow all hosts for local development
     ALLOWED_HOSTS = ['*']
 else:
-    # Priority 1: Use environment variable if it exists
     env_hosts = os.environ.get('DJANGO_ALLOWED_HOSTS')
     if env_hosts:
         ALLOWED_HOSTS = env_hosts.split(',')
     else:
-        # Priority 2: Hardcode essential production hosts for guaranteed functionality
         ALLOWED_HOSTS = [
             RAILWAY_HOST, 
             # Note: Allowed Hosts usually only need the API domain, 
@@ -59,7 +55,6 @@ INSTALLED_APPS = [
     'storages',
     'rest_framework',
     'corsheaders',
-
     'recruitment',
 ]
 
@@ -72,7 +67,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    
 ]
 
 
@@ -129,18 +124,14 @@ AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
 AWS_S3_REGION_NAME = AWS_REGION
 AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com'
 
-# This disables querystring authentication for public files (e.g., static files), 
-# which is often required for static assets to be cached and served correctly.
+
 AWS_QUERYSTRING_AUTH = False 
 
-# --- STATIC & MEDIA FILES ---
 
-# 1. Default Storage for user uploads (Media/Resumes)
-# Point this to your new custom storage class
+
 DEFAULT_FILE_STORAGE = 'hr_recruitment.storage_backends.PrivateMediaStorage'
 
-# 2. Static Files Storage
-# Use the custom static storage class
+
 STATICFILES_STORAGE = 'hr_recruitment.storage_backends.StaticRootStorage'
 
 # URLs for static and media files now point to S3

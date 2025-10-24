@@ -1,2 +1,9 @@
 # Local Environment Variables
 .env
+
+# Python files
+*.pyc
+__pycache__/
+
+# Static files collected by Django
+staticfiles/
