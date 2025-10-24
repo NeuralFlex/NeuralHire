@@ -8,8 +8,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'dev-secret-key-change-me')
 
-# 1. FIXED DEBUG DEFAULT: Defaults to '0' (False) if DJANGO_DEBUG is not set, 
-# which is safer for production environments.
 DEBUG = os.environ.get('DJANGO_DEBUG', '0') == '1'
 
 # Define known production host for explicit safety
@@ -58,7 +56,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'storages',
     'rest_framework',
     'corsheaders',
 
@@ -125,14 +123,28 @@ REST_FRAMEWORK = {
 
 
 # --- STATIC & MEDIA FILES ---
+# --- AWS S3 CONFIGURATION ---
+AWS_REGION = os.environ.get('AWS_REGION') 
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com'
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / "static"]
+# This disables querystring authentication for public files (e.g., static files), 
+# which is often required for static assets to be cached and served correctly.
+AWS_QUERYSTRING_AUTH = False 
+
+# --- STATIC & MEDIA FILES ---
+
+# 1. Default Storage for user uploads (Media/Resumes)
+# Point this to your new custom storage class
+DEFAULT_FILE_STORAGE = 'hr_recruitment.storage_backends.PrivateMediaStorage'
+
+# 2. Static Files Storage
+# Use the custom static storage class
+STATICFILES_STORAGE = 'hr_recruitment.storage_backends.StaticRootStorage'
+
+# URLs for static and media files now point to S3
+STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/static/'
+MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/resumes/'
+
+# Standard settings still needed by collectstatic
 STATIC_ROOT = BASE_DIR / "staticfiles"
-
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

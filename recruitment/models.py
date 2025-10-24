@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from hr_recruitment.storage_backends import PrivateMediaStorage
 
 
 class Job(models.Model):
@@ -29,7 +30,8 @@ class Candidate(models.Model):
     full_name = models.CharField(max_length=200)
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=20, blank=True)
-    resume = models.FileField(upload_to='resumes/')
+    resume = models.FileField(upload_to='applicant_cvs/', 
+        storage=PrivateMediaStorage())
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

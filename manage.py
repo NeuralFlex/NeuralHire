@@ -2,6 +2,8 @@
 import os
 import sys
 
+from dotenv import load_dotenv
+load_dotenv()
 
 if __name__ == '__main__':
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'hr_recruitment.settings')
