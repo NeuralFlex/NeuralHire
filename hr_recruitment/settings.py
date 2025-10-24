@@ -126,6 +126,7 @@ REST_FRAMEWORK = {
 # --- AWS S3 CONFIGURATION ---
 AWS_REGION = os.environ.get('AWS_REGION') 
 AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_REGION_NAME = AWS_REGION
 AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com'
 
 # This disables querystring authentication for public files (e.g., static files), 
