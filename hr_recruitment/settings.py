@@ -1,6 +1,9 @@
 import os
 from pathlib import Path
 import dj_database_url
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -38,7 +41,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "https://neuralhirefrontend.netlify.app", 
 ]
-# Note: Since CORS_ALLOW_ALL_ORIGINS is True, this list is currently ignored.
 
 X_FRAME_OPTIONS = 'ALLOWALL'
 ROOT_URLCONF = 'hr_recruitment.urls'
@@ -91,13 +93,29 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'hr_recruitment.wsgi.application'
 
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         conn_max_age=600,
+#         default='sqlite:///db.sqlite3' 
+#     )
+# }Railway
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }local 
 DATABASES = {
-    'default': dj_database_url.config(
-        conn_max_age=600,
-        # Ensure you set the DATABASE_URL environment variable on Railway
-        default='sqlite:///db.sqlite3' 
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DB_NAME', 'neuralflex'),
+        'USER': os.getenv('DB_USER', 'neuralflex'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'neuralhiredb'),
+        'HOST': os.getenv('DB_HOST', 'neuralhiredb.c8zm8s0oqitm.us-east-1.rds.amazonaws.com'),
+        'PORT': os.getenv('DB_PORT', '5432'),
+    }
 }
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
