@@ -30,6 +30,7 @@ class Candidate(models.Model):
     full_name = models.CharField(max_length=200)
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=20, blank=True)
+    experience = models.PositiveIntegerField(blank=True, null=True)
     resume = models.FileField(upload_to='applicant_cvs/', 
         storage=PrivateMediaStorage())
     created_at = models.DateTimeField(auto_now_add=True)

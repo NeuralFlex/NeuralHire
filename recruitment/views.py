@@ -66,6 +66,7 @@ class JobViewSet(viewsets.ModelViewSet):
         full_name = request.data.get("full_name")
         email = request.data.get("email")
         phone = request.data.get("phone", "")
+        experience = request.data.get("experience", None)
         resume_file = request.FILES.get("resume")
 
         # Validate required fields
@@ -84,6 +85,7 @@ class JobViewSet(viewsets.ModelViewSet):
         if not created:
             candidate.full_name = full_name
             candidate.phone = phone
+            candidate.experience = experience
             candidate.resume = resume_file
             candidate.save()
 

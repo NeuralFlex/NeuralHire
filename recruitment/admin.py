@@ -5,13 +5,13 @@ from .models import Job, Candidate, Application
 @admin.register(Job)
 class JobAdmin(admin.ModelAdmin):
     list_display = ("title", "location", "is_open", "created_at")
-    list_filter = ( "is_open", "location")
-    search_fields = ("title", "description", "department")
+    list_filter = ("is_open", "location")
+    search_fields = ("title", "description")
 
 
 @admin.register(Candidate)
 class CandidateAdmin(admin.ModelAdmin):
-    list_display = ("full_name", "email", "phone", "created_at")
+    list_display = ("full_name", "email", "phone", "experience", "created_at")
     search_fields = ("full_name", "email")
 
 
