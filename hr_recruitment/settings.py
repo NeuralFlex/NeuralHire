@@ -37,11 +37,21 @@ else:
 CORS_ALLOW_ALL_ORIGINS = True 
 
 # If CORS_ALLOW_ALL_ORIGINS = False, this list is used:
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "https://neuralhirefrontend.netlify.app", 
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",
+#     "https://neuralhirefrontend.netlify.app", 
+# ]
 
+CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOW_HEADERS = [
+    "authorization",
+    "content-type",
+    "accept",
+    "origin",
+    "user-agent",
+    "x-requested-with",
+]
 X_FRAME_OPTIONS = 'ALLOWALL'
 ROOT_URLCONF = 'hr_recruitment.urls'
 
