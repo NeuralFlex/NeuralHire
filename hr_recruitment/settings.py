@@ -7,6 +7,9 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # --- CORE CONFIGURATION ---
 
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'dev-secret-key-change-me')
@@ -50,8 +53,7 @@ CORS_ALLOW_HEADERS = [
     "x-requested-with",
 ]
 
-USE_X_FORWARDED_HOST = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 
 X_FRAME_OPTIONS = 'ALLOWALL'
 ROOT_URLCONF = 'hr_recruitment.urls'
