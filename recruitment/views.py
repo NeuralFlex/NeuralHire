@@ -118,11 +118,13 @@ class ApplicationViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
+        queryset = Application.objects.select_related('job', 'candidate').all()
 
         if user.is_superuser or user.is_staff:
-            return Application.objects.select_related('job', 'candidate').all().order_by('-applied_at')
+            return queryset.order_by('-applied_at')
 
-        return Application.objects.select_related('job', 'candidate').filter(candidate__email=user.email)
+        # For non-staff users, filter by email
+        return queryset.filter(candidate__email=user.email).order_by('-applied_at')
 
     def update(self, request, *args, **kwargs):
         """

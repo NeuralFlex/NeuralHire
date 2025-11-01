@@ -19,8 +19,8 @@ class Job(models.Model):
     responsibilities = models.TextField(blank=True)
     type = models.CharField(max_length=50, choices=JOB_TYPES, default="full-time")
     location = models.CharField(max_length=100, blank=True)  # onsite, hybrid, remote
-    is_open = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    is_open = models.BooleanField(default=True, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
 
     def __str__(self):
         return self.title
@@ -28,7 +28,7 @@ class Job(models.Model):
 
 class Candidate(models.Model):
     full_name = models.CharField(max_length=200)
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True, db_index=True)
     phone = models.CharField(max_length=20, blank=True)
     experience = models.PositiveIntegerField(blank=True, null=True)
     resume = models.FileField(upload_to='applicant_cvs/', 
@@ -47,13 +47,17 @@ class Application(models.Model):
         ('hired', 'Hired'),
         ('rejected', 'Rejected'),
     ]
-    job = models.ForeignKey(Job, related_name='applications', on_delete=models.CASCADE)
-    candidate = models.ForeignKey(Candidate, related_name='applications', on_delete=models.CASCADE)
-    stage = models.CharField(max_length=20, choices=STAGES, default='applied')
-    applied_at = models.DateTimeField(auto_now_add=True)
+    job = models.ForeignKey(Job, related_name='applications', on_delete=models.CASCADE, db_index=True)
+    candidate = models.ForeignKey(Candidate, related_name='applications', on_delete=models.CASCADE, db_index=True)
+    stage = models.CharField(max_length=20, choices=STAGES, default='applied', db_index=True)
+    applied_at = models.DateTimeField(auto_now_add=True, db_index=True)
     
     class Meta:
-        unique_together = ('job', 'candidate')  
+        unique_together = ('job', 'candidate')
+        indexes = [
+            models.Index(fields=['-applied_at']),  # For ordering by applied_at descending
+            models.Index(fields=['stage', '-applied_at']),  # For filtering by stage with ordering
+        ]  
 
     def __str__(self):
         return f"{self.candidate.full_name} - {self.job.title} ({self.stage})"

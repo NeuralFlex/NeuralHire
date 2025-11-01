@@ -20,14 +20,12 @@ class ApplicationSerializer(serializers.ModelSerializer):
     candidate_name = serializers.CharField(source="candidate.full_name", read_only=True)
     candidate_email = serializers.EmailField(source="candidate.email", read_only=True)
 
-
     class Meta:
         model = Application
         fields = [
             "id",
             "job",
             "job_title",
-            "candidate",
             "candidate_name",
             "candidate_email",
             "stage",
