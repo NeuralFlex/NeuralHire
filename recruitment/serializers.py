@@ -20,7 +20,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
     candidate_name = serializers.CharField(source="candidate.full_name", read_only=True)
     candidate_email = serializers.EmailField(source="candidate.email", read_only=True)
 
-    candidate = CandidateSerializer()
 
     class Meta:
         model = Application
@@ -35,14 +34,18 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "applied_at",
         ]
 
+    # Update create method to work without nested serializer
     def create(self, validated_data):
-        candidate_data = validated_data.pop("candidate")
-        candidate, _ = Candidate.objects.get_or_create(
-            email=candidate_data["email"], defaults=candidate_data
-        )
-        application = Application.objects.create(candidate=candidate, **validated_data)
+        candidate_data = validated_data.pop("candidate", None)
+        if candidate_data:
+            candidate, _ = Candidate.objects.get_or_create(
+                email=candidate_data["email"], defaults=candidate_data
+            )
+            application = Application.objects.create(candidate=candidate, **validated_data)
+        else:
+            application = Application.objects.create(**validated_data)
         return application
-
+        
 class NeuralHireTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
