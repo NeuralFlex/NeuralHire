@@ -9,13 +9,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # --- CORE CONFIGURATION ---
 
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'dev-secret-key-change-me')
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 DEBUG = os.environ.get('DJANGO_DEBUG', '0') == '1'
 
 # Define known production host for explicit safety
-RAILWAY_HOST = 'web-production-9687.up.railway.app' 
-NETLIFY_HOST = 'https://neuralhirefrontend.netlify.app'
+RAILWAY_HOST = 'neuralhire-production.up.railway.app'
+FRONTEND_HOST ='nerualhire-frontend-production.up.railway.app'
+# NETLIFY_HOST = 'https://neuralhirefrontend.netlify.app'
 
 if DEBUG:
     ALLOWED_HOSTS = ['*']
@@ -39,7 +40,9 @@ CORS_ALLOW_ALL_ORIGINS = True
 # If CORS_ALLOW_ALL_ORIGINS = False, this list is used:
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "https://neuralhirefrontend.netlify.app", 
+    # "https://neuralhirefrontend.netlify.app",
+    "https://nerualhire-frontend-production.up.railway.app",
+
 ]
 CORS_ALLOW_HEADERS = [
     "authorization",
