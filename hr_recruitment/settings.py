@@ -109,7 +109,8 @@ WSGI_APPLICATION = 'hr_recruitment.wsgi.application'
 #         conn_max_age=600,
 #         default='sqlite:///db.sqlite3' 
 #     )
-# }Railway
+# }
+# Railway
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
@@ -119,11 +120,11 @@ WSGI_APPLICATION = 'hr_recruitment.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME', 'neuralflex'),
-        'USER': os.getenv('DB_USER', 'neuralflex'),
-        'PASSWORD': os.getenv('DB_PASSWORD', 'neuralhiredb'),
-        'HOST': os.getenv('DB_HOST', 'neuralhiredb.c8zm8s0oqitm.us-east-1.rds.amazonaws.com'),
-        'PORT': os.getenv('DB_PORT', '5432'),
+        'NAME': os.getenv('DB_NAME', ''),
+        'USER': os.getenv('DB_USER', ''),
+        'PASSWORD': os.getenv('DB_PASSWORD', ''),
+        'HOST': os.getenv('DB_HOST', ''),
+        'PORT': os.getenv('DB_PORT', ''),
     }
 }
 

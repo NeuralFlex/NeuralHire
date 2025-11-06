@@ -19,7 +19,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
     job_title = serializers.CharField(source="job.title", read_only=True)
     candidate_name = serializers.CharField(source="candidate.full_name", read_only=True)
     candidate_email = serializers.EmailField(source="candidate.email", read_only=True)
-
     candidate = CandidateSerializer()
 
     class Meta:
