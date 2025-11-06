@@ -27,8 +27,6 @@ else:
     else:
         ALLOWED_HOSTS = [
             RAILWAY_HOST, 
-            # Note: Allowed Hosts usually only need the API domain, 
-            # but sometimes include the frontend if it's hitting non-API views.
             '.railway.app', # Safe wildcard for Railway subdomains
         ]
 
@@ -40,7 +38,6 @@ CORS_ALLOW_ALL_ORIGINS = True
 # If CORS_ALLOW_ALL_ORIGINS = False, this list is used:
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    # "https://neuralhirefrontend.netlify.app",
     "https://nerualhire-frontend-production.up.railway.app",
 
 ]
