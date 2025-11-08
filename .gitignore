@@ -7,3 +7,5 @@ __pycache__/
 
 # Static files collected by Django
 staticfiles/
+
+db.sqlite3
